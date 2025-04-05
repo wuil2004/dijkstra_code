@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Algoritmo de Dijkstra</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Algoritmo de Dijkstra</h1>
+        <form method="post" action="/resolver">
+            <label>Nodos (separados por coma):</label>
+            <input name="nodos" placeholder="a,b,c,d" required><br>
+
+            <label>Aristas (una por línea, formato: nodo1,nodo2,peso):</label>
+            <textarea name="aristas" rows="5" placeholder="a,b,4\nb,c,3" required></textarea><br>
+
+            <label>¿Grafo dirigido?</label>
+            <select name="dirigido">
+                <option value="no">No</option>
+                <option value="si">Sí</option>
+            </select><br>
+
+            <label>Nodo origen:</label>
+            <input name="origen" required><br>
+
+            <label>Nodo destino:</label>
+            <input name="destino" required><br>
+
+            <button type="submit">Calcular</button>
+        </form>
+
+        {% if camino %}
+        <h2>Resultado</h2>
+        <p><strong>Camino:</strong> {{ camino | join(" → ") }}</p>
+        <p><strong>Distancia total:</strong> {{ distancia }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
