@@ -39,6 +39,16 @@ function dibujarGrafo(data) {
         .attr("text-anchor", "middle")
         .attr("dy", 4);
 
+    // Agregar etiquetas con los pesos de las aristas
+    let edgeLabels = svg.append("g")
+        .selectAll("text")
+        .data(data.links)
+        .join("text")
+        .attr("font-size", 12)
+        .attr("fill", "black")
+        .attr("text-anchor", "middle")
+        .text(d => d.weight);
+
     simulation.on("tick", () => {
         link
             .attr("x1", d => d.source.x)
@@ -53,6 +63,10 @@ function dibujarGrafo(data) {
         label
             .attr("x", d => d.x)
             .attr("y", d => d.y);
+
+        edgeLabels
+            .attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
     });
 }
 
