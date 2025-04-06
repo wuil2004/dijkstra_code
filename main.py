@@ -1,6 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
-app = Flask(__name__)
+app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 
 class Grafo:
     def __init__(self):
@@ -55,17 +62,24 @@ class Grafo:
                 aristas.append({"source": origen, "target": destino, "weight": peso})
         return nodos, aristas
 
-@app.route("/")
-def index():
-    return render_template("index.html")
 
-@app.route("/resolver", methods=["POST"])
-def resolver():
-    nodos = request.form["nodos"].split(",")
-    aristas_texto = request.form["aristas"].strip().split("\n")
-    dirigido = request.form["dirigido"] == "si"
-    origen = request.form["origen"]
-    destino = request.form["destino"]
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.post("/resolver", response_class=HTMLResponse)
+async def resolver(
+    request: Request,
+    nodos: str = Form(...),
+    aristas: str = Form(...),
+    dirigido: str = Form(...),
+    origen: str = Form(...),
+    destino: str = Form(...)
+):
+    nodos = nodos.split(",")
+    aristas_texto = aristas.strip().split("\n")
+    es_dirigido = dirigido.lower() == "si"
 
     grafo = Grafo()
     for nodo in nodos:
@@ -75,7 +89,7 @@ def resolver():
         partes = linea.strip().split(",")
         if len(partes) == 3:
             n1, n2, peso = partes
-            grafo.agregar_arista(n1.strip(), n2.strip(), int(peso), dirigido)
+            grafo.agregar_arista(n1.strip(), n2.strip(), int(peso), es_dirigido)
 
     camino, distancia = grafo.dijkstra(origen, destino)
 
@@ -85,9 +99,9 @@ def resolver():
         for i in range(len(camino) - 1)
     ]
 
-    # Si la petición viene desde JavaScript (AJAX), devolvemos JSON
-    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        return jsonify({
+    # AJAX
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JSONResponse({
             "camino": camino,
             "distancia": distancia,
             "nodes": nodes,
@@ -95,15 +109,12 @@ def resolver():
             "path_edges": path_edges
         })
 
-    # Si no, devolvemos HTML tradicional
-    return render_template(
-        "index.html",
-        camino=camino,
-        distancia=distancia,
-        nodes=nodes,
-        links=links,
-        path_edges=path_edges
-    )
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    # HTML tradicional
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "camino": camino,
+        "distancia": distancia,
+        "nodes": nodes,
+        "links": links,
+        "path_edges": path_edges
+    })

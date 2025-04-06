@@ -1,91 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 20px;
-    background: #f8f9fa;
-    color: #333;
-  }
-  
-  h1 {
-    text-align: center;
-    color: #0056b3;
-  }
-  
-  .contenedor {
-    display: flex;
-    gap: 30px;
-    margin-top: 20px;
-    align-items: flex-start;
-  }
-  
-  form {
-    width: 300px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-  }
-  
-  form input,
-  form select,
-  form textarea {
-    width: 100%;
-    margin-top: 4px;
-    margin-bottom: 10px;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  form button {
-    width: 100%;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  form button:hover {
-    background: #0056b3;
-  }
-  
-  .grafico {
-    flex-grow: 1;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 10px;
-  }
-  
-  .link {
-    stroke: #999;
-    stroke-opacity: 0.6;
-  }
-  
-  .link.highlight {
-    stroke: red;
-    stroke-width: 3px;
-  }
-  
-  .node circle {
-    fill: lightblue;
-    stroke: #333;
-    stroke-width: 1.5px;
-  }
-  
-  .node text {
-    font: 12px sans-serif;
-    pointer-events: none;
-    text-anchor: middle;
-    dominant-baseline: central;
-  }
-  
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #f0f2f5;
+  color: #2e2e2e;
+}
+
+h1 {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #1f2937;
+  color: #f9fafb;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  padding: 30px;
+}
+
+form {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  width: 340px;
+}
+
+form label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+  color: #374151;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  transition: border 0.2s;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background-color: #1d4ed8;
+}
+
+.grafico {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  min-width: 400px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.link {
+  stroke: #9ca3af;
+  stroke-opacity: 0.6;
+}
+
+.link.highlight {
+  stroke: #f87171;
+  stroke-width: 3px;
+}
+
+.node circle {
+  fill: #93c5fd;
+  stroke: #1d4ed8;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 14px 'Poppins', sans-serif;
+  fill: #111827;
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
