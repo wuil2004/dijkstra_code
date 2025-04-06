@@ -1,77 +1,109 @@
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from dijkstra import dijkstra, construir_camino
-import networkx as nx
-import matplotlib.pyplot as plt
-import os
+from flask import Flask, render_template, request, jsonify
 
-app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app = Flask(__name__)
 
-@app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+class Grafo:
+    def __init__(self):
+        self.adyacencia = {}
 
-@app.post("/resolver", response_class=HTMLResponse)
-async def resolver(request: Request,
-                nodos: str = Form(...),
-                aristas: str = Form(...),
-                origen: str = Form(...),
-                destino: str = Form(...),
-                dirigido: str = Form("no")):
+    def agregar_nodo(self, nodo):
+        if nodo not in self.adyacencia:
+            self.adyacencia[nodo] = []
 
-    nodos = nodos.replace(" ", "").split(",")
-    grafo = {n: [] for n in nodos}
-    dirigido = dirigido == "si"
-
-    for arista in aristas.strip().split("\n"):
-        u, v, peso = arista.strip().split(",")
-        peso = int(peso)
-        grafo[u].append((v, peso))
+    def agregar_arista(self, origen, destino, peso, dirigido):
+        self.agregar_nodo(origen)
+        self.agregar_nodo(destino)
+        self.adyacencia[origen].append((destino, peso))
         if not dirigido:
-            grafo[v].append((u, peso))
+            self.adyacencia[destino].append((origen, peso))
 
-    distancias, padres = dijkstra(grafo, origen)
-    camino = construir_camino(padres, destino)
-    distancia = distancias[destino]
+    def dijkstra(self, inicio, fin):
+        import heapq
+        distancias = {nodo: float("inf") for nodo in self.adyacencia}
+        anterior = {nodo: None for nodo in self.adyacencia}
+        distancias[inicio] = 0
+        cola = [(0, inicio)]
 
-    dibujar_grafo(grafo, camino)
+        while cola:
+            dist_actual, nodo_actual = heapq.heappop(cola)
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "camino": camino,
-        "distancia": distancia,
-        "origen": origen,
-        "destino": destino
-    })
+            if nodo_actual == fin:
+                break
 
-def dibujar_grafo(grafo, camino=None, nombre_archivo="static/grafo.png"):
-    G = nx.DiGraph() if any(isinstance(v, list) for v in grafo.values()) else nx.Graph()
-    for nodo in grafo:
-        for vecino, peso in grafo[nodo]:
-            G.add_edge(nodo, vecino, weight=peso)
+            for vecino, peso in self.adyacencia[nodo_actual]:
+                nueva_dist = dist_actual + peso
+                if nueva_dist < distancias[vecino]:
+                    distancias[vecino] = nueva_dist
+                    anterior[vecino] = nodo_actual
+                    heapq.heappush(cola, (nueva_dist, vecino))
 
-    pos = nx.spring_layout(G)
-    plt.figure(figsize=(8, 6))
+        camino = []
+        actual = fin
+        while actual:
+            camino.insert(0, actual)
+            actual = anterior[actual]
+        if distancias[fin] == float("inf"):
+            camino = []
 
-    nx.draw_networkx_nodes(G, pos, node_size=700, node_color='lightblue')
-    nx.draw_networkx_labels(G, pos)
+        return camino, distancias[fin]
 
-    edge_colors = []
-    for u, v in G.edges():
-        if camino and (u, v) in zip(camino, camino[1:]):
-            edge_colors.append('red')
-        else:
-            edge_colors.append('gray')
+    def obtener_nodos_y_aristas(self):
+        nodos = [{"id": nodo} for nodo in self.adyacencia]
+        aristas = []
+        for origen, destinos in self.adyacencia.items():
+            for destino, peso in destinos:
+                aristas.append({"source": origen, "target": destino, "weight": peso})
+        return nodos, aristas
 
-    nx.draw_networkx_edges(G, pos, edge_color=edge_colors, arrows=True)
-    labels = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-    plt.axis('off')
-    plt.tight_layout()
-    plt.savefig(nombre_archivo)
-    plt.close()
+@app.route("/resolver", methods=["POST"])
+def resolver():
+    nodos = request.form["nodos"].split(",")
+    aristas_texto = request.form["aristas"].strip().split("\n")
+    dirigido = request.form["dirigido"] == "si"
+    origen = request.form["origen"]
+    destino = request.form["destino"]
+
+    grafo = Grafo()
+    for nodo in nodos:
+        grafo.agregar_nodo(nodo.strip())
+
+    for linea in aristas_texto:
+        partes = linea.strip().split(",")
+        if len(partes) == 3:
+            n1, n2, peso = partes
+            grafo.agregar_arista(n1.strip(), n2.strip(), int(peso), dirigido)
+
+    camino, distancia = grafo.dijkstra(origen, destino)
+
+    nodes, links = grafo.obtener_nodos_y_aristas()
+    path_edges = [
+        {"source": camino[i], "target": camino[i + 1]}
+        for i in range(len(camino) - 1)
+    ]
+
+    # Si la petición viene desde JavaScript (AJAX), devolvemos JSON
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({
+            "camino": camino,
+            "distancia": distancia,
+            "nodes": nodes,
+            "links": links,
+            "path_edges": path_edges
+        })
+
+    # Si no, devolvemos HTML tradicional
+    return render_template(
+        "index.html",
+        camino=camino,
+        distancia=distancia,
+        nodes=nodes,
+        links=links,
+        path_edges=path_edges
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
