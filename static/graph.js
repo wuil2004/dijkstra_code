@@ -6,6 +6,21 @@ let simulation, link, node, label;
 function dibujarGrafo(data) {
     svg.selectAll("*").remove();
 
+    // Definir marcador de flecha
+    if (data.dirigido) {
+        svg.append("defs").append("marker")
+            .attr("id", "flecha")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 25)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "#999");
+    }
+
     simulation = d3.forceSimulation(data.nodes)
         .force("link", d3.forceLink(data.links).id(d => d.id).distance(100))
         .force("charge", d3.forceManyBody().strength(-400))
@@ -19,6 +34,11 @@ function dibujarGrafo(data) {
         .join("line")
         .attr("stroke-width", 2)
         .attr("class", d => esAristaEnCamino(d, data.pathEdges) ? "link highlight" : "link");
+
+    // Agregar flechas si el grafo es dirigido
+    if (data.dirigido) {
+        link.attr("marker-end", "url(#flecha)");
+    }
 
     node = svg.append("g")
         .selectAll("circle")
@@ -128,7 +148,8 @@ document.querySelector("form").addEventListener("submit", function (e) {
             dibujarGrafo({
                 nodes: data.nodes,
                 links: data.links,
-                pathEdges: data.path_edges
+                pathEdges: data.path_edges,
+                dirigido: data.dirigido // 👈 importante
             });
         });
 });

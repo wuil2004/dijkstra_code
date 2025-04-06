@@ -106,7 +106,8 @@ async def resolver(
             "distancia": distancia,
             "nodes": nodes,
             "links": links,
-            "path_edges": path_edges
+            "path_edges": path_edges,
+            "dirigido":es_dirigido
         })
 
     # HTML tradicional
