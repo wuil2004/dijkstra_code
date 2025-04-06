@@ -25,6 +25,9 @@ class Grafo:
             self.adyacencia[destino].append((origen, peso))
 
     def dijkstra(self, inicio, fin):
+        if inicio not in self.adyacencia or fin not in self.adyacencia:
+            return [], "Uno o ambos nodos no existen en el grafo."
+
         import heapq
         distancias = {nodo: float("inf") for nodo in self.adyacencia}
         anterior = {nodo: None for nodo in self.adyacencia}
@@ -92,6 +95,8 @@ async def resolver(
             grafo.agregar_arista(n1.strip(), n2.strip(), int(peso), es_dirigido)
 
     camino, distancia = grafo.dijkstra(origen, destino)
+    if not camino:
+        return JSONResponse({"error": "Uno o ambos nodos no existen en el grafo."}, status_code=400)
 
     nodes, links = grafo.obtener_nodos_y_aristas()
     path_edges = [
@@ -107,7 +112,7 @@ async def resolver(
             "nodes": nodes,
             "links": links,
             "path_edges": path_edges,
-            "dirigido":es_dirigido
+            "dirigido": es_dirigido
         })
 
     # HTML tradicional

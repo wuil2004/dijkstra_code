@@ -128,6 +128,11 @@ document.querySelector("form").addEventListener("submit", function (e) {
     })
         .then(r => r.json())
         .then(data => {
+            if (data.error) {
+                alert(data.error); // Mostrar error si no se encuentran los nodos
+                return;
+            }
+
             // Mostrar resultado en texto
             document.querySelector("p.camino")?.remove();
             document.querySelector("p.distancia")?.remove();
