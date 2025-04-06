@@ -1,75 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Algoritmo de Dijkstra</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Algoritmo de Dijkstra</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-  <h1>Algoritmo de Dijkstra</h1>
+    <h1>Algoritmo de Dijkstra</h1>
 
-  <div class="contenedor">
+    <div class="contenedor">
     <form method="post" action="/resolver" id="graph-form">
-      <label>Nodos (separados por coma):</label>
-      <input name="nodos" id="nodos" placeholder="a,b,c,d" required><br>
+        <label>Nodos (separados por coma):</label>
+        <input name="nodos" id="nodos" placeholder="a,b,c,d" required><br>
 
-      <label>Aristas (una por línea, formato: nodo1,nodo2,peso):</label>
-      <textarea name="aristas" id="aristas" rows="5" placeholder="a,b,4\nb,c,3" required></textarea><br>
+        <label>Aristas (una por línea, formato: nodo1,nodo2,peso):</label>
+        <textarea name="aristas" id="aristas" rows="5" placeholder="a,b,4\nb,c,3" required></textarea><br>
 
-      <label>¿Grafo dirigido?</label>
-      <select name="dirigido" id="dirigido">
+        <label>¿Grafo dirigido?</label>
+        <select name="dirigido" id="dirigido">
         <option value="no">No</option>
         <option value="si">Sí</option>
-      </select><br>
+        </select><br>
 
-      <label>Nodo origen:</label>
-      <input name="origen" required><br>
+        <label>Nodo origen:</label>
+        <input name="origen" required><br>
 
-      <label>Nodo destino:</label>
-      <input name="destino" required><br>
+        <label>Nodo destino:</label>
+        <input name="destino" required><br>
 
-      <button type="submit">Calcular</button>
+        <button type="submit">Calcular</button>
     </form>
 
     <div class="grafico">
-      <svg id="graph" width="800" height="600"></svg>
+        <svg id="graph" width="800" height="600"></svg>
     </div>
-  </div>
+    </div>
 
-  <script src="/static/graph.js"></script>
-  <script>
+    <script src="/static/graph.js"></script>
+    <script>
     const nodosInput = document.getElementById("nodos");
     const aristasInput = document.getElementById("aristas");
     const dirigidoInput = document.getElementById("dirigido");
 
     function parseFormToGraph() {
-      const nodos = nodosInput.value.split(",").map(n => n.trim()).filter(Boolean);
-      const aristasText = aristasInput.value.trim();
-      const dirigido = dirigidoInput.value === "si";
+        const nodos = nodosInput.value.split(",").map(n => n.trim()).filter(Boolean);
+        const aristasText = aristasInput.value.trim();
+        const dirigido = dirigidoInput.value === "si";
 
-      const nodes = nodos.map(id => ({ id }));
-      const links = [];
+        const nodes = nodos.map(id => ({ id }));
+        const links = [];
 
-      if (aristasText) {
-        const lines = aristasText.split("\n");
-        for (const line of lines) {
-          const [source, target, weight] = line.split(",").map(s => s.trim());
-          if (source && target) {
-            links.push({ source, target, weight: +weight });
-            if (!dirigido) {
-              links.push({ source: target, target: source, weight: +weight });
+        if (aristasText) {
+            const lines = aristasText.split("\n");
+            for (const line of lines) {
+                const [source, target, weight] = line.split(",").map(s => s.trim());
+                if (source && target) {
+                    links.push({ source, target, weight: +weight });
+                    if (!dirigido) {
+                        links.push({ source: target, target: source, weight: +weight });
+                    }
+                }
             }
-          }
         }
-      }
 
-      return { nodes, links, pathEdges: [] };
+        return { nodes, links, pathEdges: [] };
     }
 
     function renderLiveGraph() {
-      const graph = parseFormToGraph();
-      dibujarGrafo(graph); // Usa la función global definida en graph.js
+        const graph = parseFormToGraph();
+        dibujarGrafo(graph); // Usa la función global definida en graph.js
     }
 
     // Eventos para dibujar en tiempo real
@@ -78,6 +78,6 @@
     dirigidoInput.addEventListener("change", renderLiveGraph);
 
     renderLiveGraph(); // Inicial
-  </script>
+    </script>
 </body>
 </html>
