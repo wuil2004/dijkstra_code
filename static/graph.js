@@ -60,14 +60,23 @@ function dibujarGrafo(data) {
         .attr("dy", 4);
 
     // Agregar etiquetas con los pesos de las aristas
-    let edgeLabels = svg.append("g")
+    /*let edgeLabels = svg.append("g")
         .selectAll("text")
         .data(data.links)
         .join("text")
         .attr("font-size", 12)
         .attr("fill", "black")
         .attr("text-anchor", "middle")
+        .text(d => d.weight);*/
+    let edgeLabels = svg.append("g")
+        .selectAll("text")
+        .data(data.links)
+        .join("text")
+        .attr("font-size", 12)
+        .attr("class", d => esAristaEnCamino(d, data.pathEdges) ? "edge-label highlight" : "edge-label")
+        .attr("text-anchor", "middle")
         .text(d => d.weight);
+    
 
     simulation.on("tick", () => {
         link

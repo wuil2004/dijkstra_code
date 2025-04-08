@@ -1,20 +1,25 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
-  background: #f0f2f5;
-  color: #2e2e2e;
+  padding: 0;
+  background: url('/static/images.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+  backdrop-filter: blur(4px);
 }
 
 h1 {
   text-align: center;
   padding: 20px 0;
-  background-color: #1f2937;
-  color: #f9fafb;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #00ffff;
   margin: 0;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 600;
+  text-shadow: 0 0 10px #00ffff99;
 }
 
 .contenedor {
@@ -26,10 +31,10 @@ h1 {
 }
 
 form {
-  background: #ffffff;
+  background: rgba(0, 0, 0, 0.65);
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 0 20px #00ffff88;
   width: 340px;
 }
 
@@ -38,7 +43,7 @@ form label {
   font-weight: 600;
   margin-top: 12px;
   display: block;
-  color: #374151;
+  color: #a5f3fc;
 }
 
 form input,
@@ -46,12 +51,13 @@ form select,
 form textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #0ff;
   border-radius: 10px;
   margin-top: 5px;
   margin-bottom: 15px;
   font-size: 0.95rem;
-  background-color: #f9fafb;
+  background-color: #111827;
+  color: #00ffff;
   transition: border 0.2s;
 }
 
@@ -59,30 +65,32 @@ form input:focus,
 form select:focus,
 form textarea:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #00ffff;
+  box-shadow: 0 0 10px #00ffff55;
 }
 
 form button {
   width: 100%;
   padding: 12px;
-  background-color: #2563eb;
-  color: white;
+  background-color: #00ffff;
+  color: #000;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 form button:hover {
-  background-color: #1d4ed8;
+  background-color: #00cccc;
+  box-shadow: 0 0 12px #00ffffaa;
 }
 
 .grafico {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 0 20px #00ffff55;
   padding: 20px;
   min-width: 400px;
   flex-grow: 1;
@@ -97,25 +105,34 @@ svg {
 }
 
 .link {
-  stroke: #9ca3af;
-  stroke-opacity: 0.6;
+  stroke: #0ff;
+  stroke-opacity: 0.4;
 }
 
 .link.highlight {
-  stroke: #f87171;
+  stroke: #ff5f5f;
   stroke-width: 3px;
 }
 
 .node circle {
-  fill: #93c5fd;
-  stroke: #1d4ed8;
-  stroke-width: 1.5px;
+  fill: #0ff;
+  stroke: #00cccc;
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 4px #0ff);
 }
 
 .node text {
   font: 14px 'Poppins', sans-serif;
-  fill: #111827;
+  fill: #ffffff;
   pointer-events: none;
   text-anchor: middle;
   dominant-baseline: central;
+}
+
+.edge-label {
+  fill: rgb(24, 254, 3);
+}
+
+.edge-label.highlight {
+  fill: white; /* o el color que prefieras */
 }
