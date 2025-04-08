@@ -136,3 +136,13 @@ svg {
 .edge-label.highlight {
   fill: white; /* o el color que prefieras */
 }
+
+@media (max-width: 768px) {
+  .form-compact .formulario-container {
+    padding: 8px !important;
+    font-size: 14px !important;
+  }
+  .form-compact #graph-container {
+    height: 400px !important;
+  }
+}

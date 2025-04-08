@@ -79,5 +79,26 @@
 
     renderLiveGraph(); // Inicial
     </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll("input, textarea, select");
+    const app = document.body;
+
+    inputs.forEach(input => {
+      input.addEventListener("focus", () => {
+        if (window.innerWidth <= 768) {
+          app.classList.add("form-compact");
+        }
+      });
+      input.addEventListener("blur", () => {
+        if (window.innerWidth <= 768) {
+          app.classList.remove("form-compact");
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
